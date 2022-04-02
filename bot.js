@@ -1,6 +1,8 @@
 const { Telegraf } = require('telegraf');
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const BOT_TOKEN = '5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8';
+
+const bot = new Telegraf(BOT_TOKEN);
 
 const getUserName = (userData) => {
   return userData.username || userData.first_name || 'anonymous'
@@ -27,6 +29,14 @@ const getHelpKeyboard = () => {
   }, [[], []])
 }
 
+const getIds = (userData) => {
+  const {from: {id: userId}, chat: {id: chatId} } = userData
+  return {
+    userId,
+    chatId
+  }
+}
+
 const keyboard = getHelpKeyboard()
 
 const HELP_COMMAND_OPTIONS = {
@@ -49,37 +59,54 @@ const MESSAGES = {
 
 class UsersEmmiter {
   constructor() {
-    this.usersList = [];
+    this.usersList = {};
   }
 
   subscribe(userData) {
-    this.usersList.push(userData)
+    const {from, chat: {id}} = userData
+
+    this.usersList = {
+      ...this.usersList, 
+      [id]:[ 
+        ...(this.usersList?.[id]? [...this.usersList[id], from] : [from])
+      ]
+    }
   }
 
   unsubscribe(userData) {
-    this.usersList = this.usersList.filter(({id}) => id !== userData.id)
+    const {chatId, userId} = getIds(userData)
+    this.usersList = {
+      ...this.usersList,
+      [chatId]: this.usersList[chatId].filter(({id}) => id !== userId)
+    }
   }
 
   getUserList() {
     return this.usersList
   }
 
-  getUsersListMassage() {
-    return this.usersList.map((user) => {
+  getUsersListMassage(userData) {
+    const {chatId} = getIds(userData)
+
+    return this.usersList[chatId].map((user) => {
       return`[@${getUserName(user)}](tg://user?id=${user.id})`
     }).join(', ')
   }
 
-  getCallAllUserMessage() {
-    return `🚨 ${this.getUsersListMassage()} 🚨`
+  getCallAllUserMessage(userData) {
+    return `🚨 ${this.getUsersListMassage(userData)} 🚨`
   }
 
   isUserExist(userData) {
-    return this.usersList.find(({id}) => id === userData.id)
+    const {chatId, userId} = getIds(userData)
+
+    return this.usersList?.[chatId] && this.usersList[chatId].find(({id}) => id === userId)
   }
 
-  isUserListEmpty() {
-    return !this.usersList.length
+  isUserListEmpty(userData) {
+    const {chatId} = getIds(userData)
+
+    return !this.usersList?.[chatId] || !this.usersList[chatId].length
   }
 }
 
@@ -88,11 +115,11 @@ const users = new UsersEmmiter();
 bot.start((ctx) => ctx.reply(MESSAGES.start)) 
 
 bot.command(COMMANDS_LIST.help, (ctx) => {
-  ctx.reply('comands list', HELP_COMMAND_OPTIONS)
+  ctx.reply('⚡️ COMMANDS ⚡️', HELP_COMMAND_OPTIONS)
 })
 
 bot.command(COMMANDS_LIST.subscribe, async (ctx) => {
-  const userData = await ctx.message.from
+  const userData = await ctx.message
 
   if(users.isUserExist(userData)){
     return ctx.reply(MESSAGES.exist)
@@ -108,7 +135,12 @@ bot.command(COMMANDS_LIST.subscribe, async (ctx) => {
 })
 
 bot.command(COMMANDS_LIST.unsubscribe, async (ctx) => {
-  const userData = await ctx.message.from
+  const userData = await ctx.message
+
+  if(users.isUserListEmpty(userData)){
+    return ctx.reply(MESSAGES.emptyList)
+      .catch(() => ctx.reply(MESSAGES.error))
+  }
 
   users.unsubscribe(userData)
 
@@ -118,13 +150,15 @@ bot.command(COMMANDS_LIST.unsubscribe, async (ctx) => {
 
 })
 
-bot.command(COMMANDS_LIST.call, (ctx) => {
-  if(users.isUserListEmpty()){
+bot.command(COMMANDS_LIST.call, async (ctx) => {
+  const userData = await ctx.message
+
+  if(users.isUserListEmpty(userData)){
     return ctx.reply(MESSAGES.emptyList)
       .catch(() => ctx.reply(MESSAGES.error))
   }
 
-  const message = users.getCallAllUserMessage()
+  const message = users.getCallAllUserMessage(userData)
 
   ctx.reply(message, CALL_ALL_USER_OPTIONS)
     .catch(() => ctx.reply(MESSAGES.error))
