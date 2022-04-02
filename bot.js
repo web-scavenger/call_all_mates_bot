@@ -1,8 +1,8 @@
 const { Telegraf } = require('telegraf');
 
-const BOT_TOKEN = '5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8';
+// const BOT_TOKEN = '5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8';
 
-const bot = new Telegraf(BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const getUserName = (userData) => {
   return userData.username || userData.first_name || 'anonymous'
@@ -137,7 +137,7 @@ bot.command(COMMANDS_LIST.subscribe, async (ctx) => {
 bot.command(COMMANDS_LIST.unsubscribe, async (ctx) => {
   const userData = await ctx.message
 
-  if(users.isUserListEmpty(userData)){
+  if(users.isUserListEmpty(userData)) {
     return ctx.reply(MESSAGES.emptyList)
       .catch(() => ctx.reply(MESSAGES.error))
   }
@@ -153,7 +153,7 @@ bot.command(COMMANDS_LIST.unsubscribe, async (ctx) => {
 bot.command(COMMANDS_LIST.call, async (ctx) => {
   const userData = await ctx.message
 
-  if(users.isUserListEmpty(userData)){
+  if(users.isUserListEmpty(userData)) {
     return ctx.reply(MESSAGES.emptyList)
       .catch(() => ctx.reply(MESSAGES.error))
   }
