@@ -5,7 +5,7 @@
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "BOT_TOKEN='5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8' node bot"
+    "start": "npm i && BOT_TOKEN='5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8' node bot"
   },
   "keywords": [],
   "author": "",
