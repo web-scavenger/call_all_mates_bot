@@ -61,7 +61,7 @@ bot.command(COMMANDS_LIST.call, async (ctx) => {
     .catch(() => ctx.reply(MESSAGES.error))
 })
 
-bot.command(COMMANDS_LIST.quit, (ctx) => {
+bot.command('remove', (ctx) => {
   ctx.leaveChat();
 });
 

@@ -10,8 +10,7 @@ export const COMMANDS_LIST: Record<string, string> = {
   subscribe : 'subscribe',
   unsubscribe: 'unsubscribe',
   call: 'here',
-  help: 'help',
-  quit: 'quit'
+  help: 'help'
 }
 
 const keyboard = getHelpKeyboard()
