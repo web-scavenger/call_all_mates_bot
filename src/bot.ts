@@ -3,8 +3,6 @@ import { Update } from 'typegram';
 import { CALL_ALL_USER_OPTIONS, COMMANDS_LIST, HELP_COMMAND_OPTIONS, MESSAGES } from './constants';
 import { UsersEmmiter } from './UsersEmmiter';
 
-// const BOT_TOKEN = '5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8';
-
 const bot: Telegraf<Context<Update>> = new Telegraf(process.env.BOT_TOKEN as string);
 
 const users = new UsersEmmiter();
