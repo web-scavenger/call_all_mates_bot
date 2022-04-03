@@ -16,7 +16,7 @@ const CALL_ALL_USER_OPTIONS = {
 const COMMANDS_LIST = {
   subscribe : 'subscribe',
   unsubscribe: 'unsubscribe',
-  call: 'call',
+  call: 'here',
   help: 'help'
 }
 
