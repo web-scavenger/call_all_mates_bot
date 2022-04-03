@@ -2,7 +2,7 @@
   "name": "call_all_mates_bot",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/app.js",
+  "main": "dist/bot.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/bot.js"
