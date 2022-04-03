@@ -2,16 +2,25 @@
   "name": "call_all_mates_bot",
   "version": "1.0.0",
   "description": "",
-  "main": "bot.js",
+  "main": "dist/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bot",
-    "dev": "BOT_TOKEN=5183968043:AAGYVOk0lK-PjMWI4_bbB3pWsBQkTBw2OJ8 node bot"
+    "build": "tsc",
+    "start": "node dist/bot.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "telegraf": "^4.7.0"
+  },
+  "engines": {
+    "node": "14.17.0",
+    "npm": "6.14.13"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "tslint": "^6.1.3",
+    "typegram": "^3.8.0",
+    "typescript": "^4.6.3"
   }
 }
