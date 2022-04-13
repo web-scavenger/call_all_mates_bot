@@ -1,1 +1,1 @@
-worker: node dist/bot.js
+worker: npm i && npm build && node dist/bot.js
